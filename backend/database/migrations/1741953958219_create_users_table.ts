@@ -1,6 +1,5 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 import { StatusUser } from '../../app/enums/status_user.js'
-import { Role } from '../../app/enums/rules.js'
 
 export default class extends BaseSchema {
   protected tableName = 'users'
@@ -11,14 +10,7 @@ export default class extends BaseSchema {
       table.string('full_name').nullable()
       table.string('email', 254).notNullable()
       table.string('password').notNullable()
-
-      table.string('bloc').notNullable()
-      table.string('apartment').notNullable()
-      table.string('phone').notNullable()
-      table.string('gender').nullable()
-      table.date('birth_date').nullable()
       table.string('cpf').nullable()
-      table.string('tenant').notNullable()
       table
         .enum('status', [
           StatusUser.ACTIVE,
@@ -28,21 +20,6 @@ export default class extends BaseSchema {
         ])
         .notNullable()
         .defaultTo(StatusUser.ACTIVE)
-      table
-        .enum('role', [
-          Role.ADMIN,
-          Role.DIRECTOR,
-          Role.MANAGER,
-          Role.GESTOR,
-          Role.FRONTDESK,
-          Role.MARKET,
-          Role.FINANCIAL,
-          Role.SALES,
-          Role.INSTRUCTOR,
-          Role.MEMBER,
-        ])
-        .notNullable()
-        .defaultTo(Role.MEMBER)
 
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').nullable()

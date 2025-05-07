@@ -6,8 +6,6 @@ import { BaseModel, beforeCreate, beforeUpdate, column } from '@adonisjs/lucid/o
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import { StatusUser } from '../enums/status_user.js'
-import { Role } from '../enums/rules.js'
-import { GenderInterfaces } from '../enums/gender.js'
 import { HttpContext } from '@adonisjs/core/http'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
@@ -29,33 +27,11 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare password: string
 
   @column()
-  declare bloc: string | null
-
-  @column()
-  declare apartment: string | null
-
-  @column()
-  declare phone: string | null
-
-  @column()
-  declare gender: string | GenderInterfaces.MALE | GenderInterfaces.FEMALE | GenderInterfaces.UNISEX
-
-  @column()
-  declare birthDate: DateTime | null
-
-  @column()
   declare cpf: string | null
-
-  @column()
-  declare tenant: string
 
   @column()
   // @enum(1, 2, 3, 4)
   declare status: string | StatusUser.ACTIVE | StatusUser.INACTIVE | StatusUser.SUSPENDED | StatusUser.DELETED
-
-  @column()
-  // @enum(1, 10, 20, 30, 40) 
-  declare role: number | Role.ADMIN | Role.DIRECTOR | Role.MANAGER | Role.GESTOR | Role.FRONTDESK | Role.MARKET | Role.FINANCIAL | Role.SALES | Role.INSTRUCTOR | Role.MEMBER
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

@@ -27,6 +27,7 @@ router.group(() => {
   router.post('/api/auth/login', [LoginController, 'store'])
   router.delete('/api/auth/destroy', [LoginController, 'destroy']).use(middleware.users())
   router.get('/api/auth/me', [LoginController, 'show']).use(middleware.users())
+  router.post('/api/auth/register', [UsersController, 'store'])
 })
 
 router

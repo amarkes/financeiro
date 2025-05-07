@@ -3,40 +3,17 @@ import { createUserValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class UsersController {
-  /**
-   * @index
-   * @description Returns array of users and it's relations
-   * @paramQuery page - Actual page - @type(string) @required
-   * @paramQuery limit - Limit per page, max 100 - @type(string) @required
-   * @paramQuery status - 1, 2, 3, 4 - @type(enum)
-   * @paramQuery bloc - All user from bloc - @type(string)
-   * @paramQuery email - email from user - @type(string)
-   * @paramQuery cpf - cpf from user - @type(string)
-   * @responseBody 200 - <User[]>.with(relations)
-   * @paramUse(sortable, filterable)
-   * @responseHeader 200 - @use(paginated)
-   * @responseHeader 200 - X-pages - A description of the header - @example(test)
-   */
-  async index({ request, response }: HttpContext) {
-    const { page, limit, status, email } = request.qs()
-    const query = User.query()
-    if (status) {
-      query.where('status', status)
-    }
-    if (email) {
-      query.where('email', 'like', `%${email}%`)
-    }
-    const users = await query.paginate(page || 1, Math.min(limit || 10, 100))
-    return response.status(200).json(users.toJSON())
+  async index({ response }: HttpContext) {
+    response.status(404).json({ message: 'Not Found' })
   }
   /**
    * @store
    * @description Create a new user
-   * @requestBody {"fullName":"John Doe","email":"johndoe@example.com","password": "teste1","cpf": "15245415236","birthDate":"1990-04-04","bloc": "teste","apartment": "teste","phone": "61954958756","gender": "U","tenant": "teste","status": "1","role": "1"}
+   * @requestBody {"fullName":"John Doe","email":"johndoe@example.com","password": "teste1","status": "1"}
    * @responseBody 200 - <User[]>
    * @paramUse(sortable, filterable)
    */
-  async store({ request, response, auth }: HttpContext) {
+  async store({ request, response }: HttpContext) {
     try {
       const data = await request.validateUsing(createUserValidator)
       const existingUser = await User.query()
@@ -52,7 +29,12 @@ export default class UsersController {
           },
         })
       }
-      const user = await User.create(request.all())
+      const user = await User.create({
+        full_name: data.fullName,
+        email: data.email,
+        password: data.password,
+        cpf: data.cpf,
+      })
       return response.status(201).json(user)
     } catch (error) {
       return response.status(400).json({ error: error?.messages || 'Error creating user' })
@@ -68,7 +50,39 @@ export default class UsersController {
     }
   }
 
-  async update({ params, request }: HttpContext) {}
+  async update({ params, request, response, auth }: HttpContext) {
+    try {
+      const user = await User.findByOrFail('id', params.id)
 
-  async destroy({ params }: HttpContext) {}
+      if (auth.user?.id !== user.id) {
+        return response.status(403).json({ error: 'Not permission' })
+      }
+
+      const payload = request.only(['full_name', 'email', 'password', 'cpf'])
+
+      // Atualiza os campos se fornecidos
+      if (payload.full_name !== undefined) user.fullName = payload.full_name
+      if (payload.email !== undefined) user.email = payload.email
+      if (payload.password !== undefined) user.password = payload.password
+      if (payload.cpf !== undefined) user.cpf = payload.cpf
+
+      await user.save()
+      return response.status(200).json(user)
+    } catch (error) {
+      return response.status(400).json({ error: error.message || 'Error updating user' })
+    }
+  }
+
+  async destroy({ params, response, auth }: HttpContext) {
+    try {
+      const user = await User.findByOrFail('id', params.id)
+      if (auth.user?.id !== user.id) {
+        return response.status(403).json({ error: 'Not permission' })
+      }
+      await user.delete()
+      return response.status(200).json({ message: 'User deleted successfully' })
+    } catch (error) {
+      return response.status(404).json({ error: 'User not found' })
+    }
+  }
 }
