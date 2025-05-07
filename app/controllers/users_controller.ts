@@ -30,7 +30,7 @@ export default class UsersController {
         })
       }
       const user = await User.create({
-        full_name: data.fullName,
+        fullName: data.fullName,
         email: data.email,
         password: data.password,
         cpf: data.cpf,

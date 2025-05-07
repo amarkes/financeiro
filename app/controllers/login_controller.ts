@@ -14,9 +14,9 @@ export default class LoginController {
     try {
       const { email, password, remember } = await request.validateUsing(createLoginValidator)
       const user = await User.verifyCredentials(email, password)
-      const res = User.accessTokens.create(user, [`${user?.role}`], {
+      const res = User.accessTokens.create(user, [`1`], {
         expiresIn: remember ? '30d' : '1d',
-        name: user?.tenant,
+        name: user?.email,
       })
       response.status(200).json(res)
     } catch (error) {
