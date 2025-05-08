@@ -9,31 +9,21 @@
 |
 */
 
-import { Env } from '@adonisjs/core/env'
+export default {
+  NODE_ENV: process.env.NODE_ENV || 'development',
+  PORT: Number(process.env.PORT || 3333),
+  APP_KEY: process.env.APP_KEY || '',
+  HOST: process.env.HOST || '127.0.0.1',
+  LOG_LEVEL: process.env.LOG_LEVEL || 'info',
 
-export default await Env.create(new URL('../', import.meta.url), {
-  NODE_ENV: Env.schema.enum(['development', 'production', 'test'] as const),
-  PORT: Env.schema.number(),
-  APP_KEY: Env.schema.string(),
-  HOST: Env.schema.string({ format: 'host' }),
-  LOG_LEVEL: Env.schema.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']),
+  // Database
+  DB_HOST: process.env.DB_HOST || 'localhost',
+  DB_PORT: Number(process.env.DB_PORT || 5432),
+  DB_USER: process.env.DB_USER || '',
+  DB_PASSWORD: process.env.DB_PASSWORD || '',
+  DB_DATABASE: process.env.DB_DATABASE || '',
 
-  /*
-  |----------------------------------------------------------
-  | Variables for configuring database connection
-  |----------------------------------------------------------
-  */
-  DB_HOST: Env.schema.string({ format: 'host' }),
-  DB_PORT: Env.schema.number(),
-  DB_USER: Env.schema.string(),
-  DB_PASSWORD: Env.schema.string.optional(),
-  DB_DATABASE: Env.schema.string(),
-
-  /*
-  |----------------------------------------------------------
-  | Variables for configuring the mail package
-  |----------------------------------------------------------
-  */
-  SMTP_HOST: Env.schema.string(),
-  SMTP_PORT: Env.schema.string(),
-})
+  // Mail
+  SMTP_HOST: process.env.SMTP_HOST || '',
+  SMTP_PORT: process.env.SMTP_PORT || '',
+}
