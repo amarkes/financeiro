@@ -36,7 +36,7 @@ git push
 # Se foi passado um tipo de versão, atualiza o package.json
 if [[ "$VERSION_TYPE" =~ ^(patch|minor|major)$ ]]; then
   echo "Atualizando versão ($VERSION_TYPE)..."
-  git push "$REPO" --tags
+  git push --tags
 fi
 
 
