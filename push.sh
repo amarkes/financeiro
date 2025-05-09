@@ -31,6 +31,8 @@ fi
 git add .
 git commit -m "$COMMIT_MESSAGE"
 git push
+fly deploy
+
 
 
 # Se foi passado um tipo de versão, atualiza o package.json
