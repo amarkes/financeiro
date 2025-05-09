@@ -1,15 +1,15 @@
-# fly.toml app configuration file generated for financeiro-7vns9w on 2025-05-08T22:32:17Z
+# fly.toml app configuration file generated for financeiro-mdns6w on 2025-05-09T01:02:25Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'financeiro-7vns9w'
+app = 'financeiro-mdns6w'
 primary_region = 'gru'
 
 [build]
 
 [http_service]
-  internal_port = 3000
+  internal_port = 3333
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
