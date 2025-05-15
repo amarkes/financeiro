@@ -45,7 +45,7 @@ fi
 # Se foi passado um tipo de versão, envia tags
 if [[ "$VERSION_TYPE" =~ ^(patch|minor|major)$ ]]; then
   echo "Enviando tag da nova versão..."
-  git push --tags main
+  git push --tags
 fi
 
 
