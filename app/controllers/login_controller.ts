@@ -6,7 +6,7 @@ export default class LoginController {
   /**
    * @store
    * @description Create a new token
-   * @requestBody {"email": "admin@sistemasweb.com", "password": "acn2pass", "remember": true}
+   * @requestBody {"email": "johndoe@example.com", "password": "teste1", "remember": true}
    * @responseBody 200 - {}
    * @paramUse(sortable, filterable)
    */
@@ -18,7 +18,8 @@ export default class LoginController {
         expiresIn: remember ? '30d' : '1d',
         name: user?.email,
       })
-      response.status(200).json(res)
+      return res
+      // response.status(200).json(res)
     } catch (error) {
       if (error.messages) {
         return response.status(422).json(error.messages)

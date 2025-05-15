@@ -41,8 +41,11 @@ export default class UsersController {
     }
   }
 
-  async show({ params, response }: HttpContext) {
+  async show({ params, response, auth }: HttpContext) {
     try {
+      if (auth.user?.id !== params.id) {
+        return response.status(403).json({ error: 'Not permission' })
+      }
       const user = await User.findByOrFail('id', params.id)
       return user
     } catch (error) {

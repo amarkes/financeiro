@@ -3,6 +3,7 @@
 # Carrega variáveis do .env
 COMMIT_MESSAGE="init"
 VERSION_TYPE=""
+DEPLOY_PROD=false
 
 # Parse dos argumentos
 for arg in "$@"; do
@@ -15,11 +16,14 @@ for arg in "$@"; do
       VERSION_TYPE="${arg#*=}"
       shift
       ;;
+    --prod)
+      DEPLOY_PROD=true
+      shift
+      ;;
     *)
       ;;
   esac
 done
-
 
 # Se foi passado um tipo de versão, atualiza o package.json
 if [[ "$VERSION_TYPE" =~ ^(patch|minor|major)$ ]]; then
@@ -31,15 +35,19 @@ fi
 git add .
 git commit -m "$COMMIT_MESSAGE"
 git push
-fly deploy
 
-
-
-# Se foi passado um tipo de versão, atualiza o package.json
-if [[ "$VERSION_TYPE" =~ ^(patch|minor|major)$ ]]; then
-  echo "Atualizando versão ($VERSION_TYPE)..."
-  git push --tags
+# Se for deploy de produção
+if [ "$DEPLOY_PROD" = true ]; then
+  echo "Fazendo deploy de produção..."
+  fly deploy
 fi
+
+# Se foi passado um tipo de versão, envia tags
+if [[ "$VERSION_TYPE" =~ ^(patch|minor|major)$ ]]; then
+  echo "Enviando tag da nova versão..."
+  git push --tags main
+fi
+
 
 
 # Apenas commit normal
@@ -53,3 +61,6 @@ fi
 
 # Commit com incremento 1.0.0
 # bash push.sh --commit="vários ajustes" --version=major
+
+# Commit e enviar para o fly
+# bash push.sh --commit="deploy v1" --version=minor --prod

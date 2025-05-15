@@ -5,6 +5,6 @@ export const createUserValidator = vine.compile(
     fullName: vine.string().trim(),
     email: vine.string().email().normalizeEmail(),
     password: vine.string().minLength(6),
-    cpf: vine.string().minLength(11),
+    cpf: vine.string().minLength(11).optional(),
   })
 )
